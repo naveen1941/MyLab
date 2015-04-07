@@ -1,0 +1,9 @@
+C:\Users\Edutor\Desktop\MyLab\MyLab\bin\MyLab.dll.config
+C:\Users\Edutor\Desktop\MyLab\MyLab\bin\MyLab.dll
+C:\Users\Edutor\Desktop\MyLab\MyLab\bin\MyLab.pdb
+C:\Users\Edutor\Desktop\MyLab\MyLab\bin\MyLab.xml
+C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.Resources.resources
+C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.vbproj.GenerateResource.Cache
+C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.dll
+C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.xml
+C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.pdb
