@@ -85,6 +85,8 @@
     <Content Include="Circuits.html" />
     <Content Include="scripts\CircuitScript.js" />
     <Content Include="styles\CanvasStyles.css" />
+    <Content Include="styles\joint.css" />
+    <Content Include="scripts\joint.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
