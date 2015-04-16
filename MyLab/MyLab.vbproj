@@ -83,6 +83,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Circuits.html" />
+    <Content Include="images\battery.PNG" />
+    <Content Include="images\bulbon.png" />
+    <Content Include="images\image1.png" />
+    <Content Include="images\bulboff.png" />
     <Content Include="scripts\CircuitScript.js" />
     <Content Include="scripts\joint.shapes.chess.js" />
     <Content Include="scripts\joint.shapes.circuit.js" />

@@ -10,36 +10,99 @@ $(document).ready(function () {
 
     var graphDrawing = new joint.dia.Graph;
 
+    var canvasWidth=1000;
+    var canvasHeight=600;
+
+    var unit=30;
+
     var paperDrawing = new joint.dia.Paper({
         el: $('#drawingPanel'),
-        width: 1000,
-        height: 500,
+        width: canvasWidth,
+        height: canvasHeight,
         model: graphDrawing,
-        gridSize: 1
+        gridSize: 1,
+        async: true 
     });
 
 
 
-    var resistor = new joint.shapes.circuit.BaseElement;
-    resistor.type = 'resistor';
-    element.set('position', { x: 100, y: 100 });
+    var addElementMIcon = function (x,y,imagepah,type) {
+        var element = new joint.shapes.circuit.BaseElement({
+            position: { x: x, y: y },
+            attrs: {
+                image: { 'xlink:href': '../images/'+imagepah }
+            }
 
-    var battery = new joint.shapes.circuit.BaseElement;
-    battery.type = 'battery';
-    battery.set('position', { x: 100, y: 100 });
+        });
+        element.type = type;
+        graphDrawing.addCell(element);
+    }
 
-    var bulb = new joint.shapes.circuit.BaseElement;
-    bulb.type = 'bulb';
-    bulb.set('position', { x: 100, y: 100 });
+    var addPort = function (x,y) {
+        var element = new joint.shapes.circuit.BreadBoardPort({
+            position: { x: x, y: y },
+        });
+        graphDrawing.addCell(element);
+    }
 
-    var bulb = new joint.shapes.circuit.BaseElement;
-    bulb.type = 'bulb';
-    bulb.set('position', { x: 100, y: 100 });
+    var makeBreadBoard = function () {
+        for(var i=1;i<7;i++){
+            for (var j = 4 ; j <9; j++) {
+                addPort(i*unit,j*unit);
+            }
+        }
+    }
 
-    
+    makeBreadBoard();
+
+    var addElementTIcon = function (x, y, imagepah, type) {
+        var element = new joint.shapes.circuit.BaseElement({
+            position: { x: x, y: y },
+            attrs: {
+                image: { 'xlink:href': '../images/' + imagepah, 'ref-x': -10, 'ref-y': -10, width: 60 }
+            }
+        });
+        element.type = type;
+        graphDrawing.addCell(element);
+    }
+
+    addElementMIcon(100, 30, 'image1.png', 'resistor');
+    addElementMIcon(250, 30, 'battery.png', 'battery');
+    addElementTIcon(400, 50, 'bulbon.png', 'resistor');
+  
+
+    paperDrawing.on('cell:pointerup', function (cellView, evt, x, y) {
+
+        if (cellView.model instanceof joint.shapes.circuit.BaseElement) {
 
 
-   
+            var ports = graphDrawing.get('cells').find(function (cell) {
+                if (cell instanceof joint.shapes.circuit.BreadBoardPort) {
+                   
+                    if (cell.getBBox().containsPoint(g.point(x, y))) {
+                        console.log(cell);
+                    }
+                }
+            });
+
+        }
+        
+
+    });
+
+    paperDrawing.on('cell:pointerdown', function (cellView, evt, x, y) {
+
+        //console.log(cellView.model.getBBox());
+
+        
+            //console.log(cellView.model.get('position'));
+        //}
+
+        
+
+    });
+
+
 });
     
 
