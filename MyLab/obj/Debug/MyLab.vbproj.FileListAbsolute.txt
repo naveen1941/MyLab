@@ -7,3 +7,12 @@ C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.vbproj.GenerateResource.Cach
 C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.dll
 C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.xml
 C:\Users\Edutor\Desktop\MyLab\MyLab\obj\Debug\MyLab.pdb
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\bin\MyLab.dll.config
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\bin\MyLab.dll
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\bin\MyLab.pdb
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\bin\MyLab.xml
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\obj\Debug\MyLab.Resources.resources
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\obj\Debug\MyLab.vbproj.GenerateResource.Cache
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\obj\Debug\MyLab.dll
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\obj\Debug\MyLab.xml
+C:\Users\naveenkumar\documents\visual studio 2013\Projects\MyLab\MyLab\obj\Debug\MyLab.pdb

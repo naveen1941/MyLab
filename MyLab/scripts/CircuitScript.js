@@ -2,11 +2,74 @@
 
 
 $(document).ready(function () {
-    var xUnit = 20;
-    var yUnit = 20;
     
+    var droppable;
+    
+    var dragBoundary = {};
+    dragBoundary.height = 100;
+
+    var graphDrawing = new joint.dia.Graph;
+
+    var paperDrawing = new joint.dia.Paper({
+        el: $('#drawingPanel'),
+        width: 1000,
+        height: 500,
+        model: graphDrawing,
+        gridSize: 1
+    });
+
+
+
+    var resistor = new joint.shapes.circuit.BaseElement;
+    resistor.type = 'resistor';
+    element.set('position', { x: 100, y: 100 });
+
+    var battery = new joint.shapes.circuit.BaseElement;
+    battery.type = 'battery';
+    battery.set('position', { x: 100, y: 100 });
+
+    var bulb = new joint.shapes.circuit.BaseElement;
+    bulb.type = 'bulb';
+    bulb.set('position', { x: 100, y: 100 });
+
+    var bulb = new joint.shapes.circuit.BaseElement;
+    bulb.type = 'bulb';
+    bulb.set('position', { x: 100, y: 100 });
+
+    
+
+
+   
 });
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
