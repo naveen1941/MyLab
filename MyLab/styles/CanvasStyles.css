@@ -17,3 +17,7 @@
     height:auto;
     width:auto;
 }
+.port:hover{
+     stroke: red;
+    stroke-width: 1px;
+}
