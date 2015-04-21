@@ -1,17 +1,15 @@
 ﻿
-
-
 $(document).ready(function () {
-    
+
     var droppable;
-    
+
     var dragBoundary = {};
     dragBoundary.height = 100;
 
     var graphDrawing = new joint.dia.Graph;
 
-    var canvasWidth=1000;
-    var canvasHeight=600;
+    var canvasWidth = 1000;
+    var canvasHeight = 600;
 
     var unit = 30;
     var logical_rows = -1;
@@ -24,14 +22,39 @@ $(document).ready(function () {
         model: graphDrawing,
         gridSize: 1,
         async: true,
-        animation: true
+        snapLinks :true,
+        animation: true,
+        validateConnection: function (vs, ms, vt, mt, e, vl) {
+
+            if (e === 'target') {
+                // target requires an input port to connect
+                if (!mt || !mt.getAttribute('class') || mt.getAttribute('class').indexOf('input') < 0) return false;
+
+                // check whether the port is being already used
+                var portUsed = _.find(this.model.getLinks(), function (link) {
+
+                    return (link.id !== vl.model.id &&
+                            link.get('target').id === vt.model.id &&
+                            link.get('target').port === mt.getAttribute('port'));
+                });
+
+                return !portUsed;
+
+            } else { // e === 'source'
+
+                // source requires an output port to connect
+                return ms && ms.getAttribute('class') && ms.getAttribute('class').indexOf('output') >= 0;
+            }
+        }
     });
 
 
 
-    var addElementMIcon = function (x,y,imagepah,type) {
+    var addElementMIcon = function (x, y, imagepah, type) {
         var element = new joint.shapes.circuit.BaseElement({
             position: { x: x, y: y },
+            initPosition: { x: x, y: y },
+            port: { 'port': undefined }
             //attrs: {
             //    image: { 'xlink:href': '../images/'+imagepah }
             //}
@@ -41,24 +64,30 @@ $(document).ready(function () {
         graphDrawing.addCell(element);
     }
 
-    var addPort = function (x,y,x_log, y_log) {
+    var addPort = function (x, y, x_log, y_log) {
         var element = new joint.shapes.circuit.BreadBoardPort({
             position: { x: x, y: y },
             logicalPosition: { x: x_log, y: y_log },
-            isOccupied:false
+            isOccupied: { 'isOccupied': false },
+            isSecondaryOccupied: { 'isSecondaryOccupied': false },
         });
         graphDrawing.addCell(element);
     }
 
     var makeBreadBoard = function () {
-        for(var i=1,k=0;i<10;i++,k++){
-            for (var j = 4,l=0 ; j <15; j++,l++) {
-                addPort(i*unit,j*unit, k,l);
+        // for(var i=1,k=0;i<canvasWidth/unit;i++,k++){
+        //     for (var j = 4,l=0 ; j <canvasWidth/unit; j++,l++) {
+        //         addPort(i*unit,j*unit, k,l);
+        //     }
+        // }
+        for (var i = 1, k = 0; i < 15; i++, k++) {
+            for (var j = 4, l = 0 ; j < 15; j++, l++) {
+                addPort(i * unit, j * unit, k, l);
             }
         }
         logical_rows = k - 1;
         logical_columns = l - 1;
-        console.log(logical_rows+':'+logical_columns);
+        console.log(logical_rows + ':' + logical_columns);
     }
 
     makeBreadBoard();
@@ -66,6 +95,8 @@ $(document).ready(function () {
     var addElementTIcon = function (x, y, imagepah, type) {
         var element = new joint.shapes.circuit.BaseElement({
             position: { x: x, y: y },
+            initPosition: { x: x, y: y },
+            port: { 'port': undefined }
             //attrs: {
             //    image: { 'xlink:href': '../images/' + imagepah, 'ref-x': -10, 'ref-y': -10, width: 60 }
             //}
@@ -74,36 +105,40 @@ $(document).ready(function () {
         graphDrawing.addCell(element);
     }
 
-    addElementMIcon(10, 10, 'image1.png', 'resistor');
-    addElementMIcon(250, 30, 'battery.png', 'battery');
-    addElementTIcon(400, 50, 'bulbon.png', 'resistor');
-  
+    addElementMIcon(100, 20, 'image1.png', 'resistor');
+    addElementMIcon(350, 20, 'battery.png', 'battery');
+    addElementMIcon(600, 20, 'bulbon.png', 'resistor');
+
+
+    //gets called on change of every link source and target..
+    graphDrawing.on('change:source change:target', function (model, end) {
+        var e = 'target' in model.changed ? 'target' : 'source';
+
+        if ((model.previous(e).id && !model.get(e).id) || (!model.previous(e).id && model.get(e).id)) {
+            console.log('something changed;');
+        }
+    });
+
 
     paperDrawing.on('cell:pointerup', function (cellView, evt, x, y) {
 
         if (cellView.model instanceof joint.shapes.circuit.BaseElement) {
 
+
+            var p0 = this._p0;
             var _pos_cellView = cellView.model.get('position');
             var _referencePortBoundary = g.rect(_pos_cellView.x, _pos_cellView.y, unit, unit);
             var ports = graphDrawing.get('cells').find(function (cell) {
                 if (cell instanceof joint.shapes.circuit.BreadBoardPort) {
-                    cell.attr({
-                        '.port': { fill: 'white' }
-                    });
                     if (_referencePortBoundary.intersect(cell.getBBox())) {
-                        var log_pos=cell.get('logicalPosition');
-                        
                         elementDrop(cellView, cell, function () {
-                            cellView.model.set('position', this._p0);
+                            cellView.model.set('position', p0);
                         });
-
+                        return {};
                     }
                 }
             });
-
-
         }
-        cellView.model.set('position', this._p0);
     });
 
     paperDrawing.on('cell:pointermove', function (cellView, evt, x, y) {
@@ -111,55 +146,97 @@ $(document).ready(function () {
 
     });
 
+    //whether a drop is valid or not
+    var isValidDrop = function (cellView, port) {
 
+        var dropPosition = port.get('position');
+        var dropBoundary = g.rect(dropPosition.x, dropPosition.y, (5 * unit), (3 * unit));
+        var isValid;
 
-    var elementDrop = function (cellView,port,moveToInitial) {
-
-        var logicalPos = port.get('logicalPosition');
-
-        if(logicalPos.x+4>logical_rows || logicalPos.y+3>logical_columns || port.isOccupied){
-            moveToInitial();
+        var elements = graphDrawing.findModelsInArea(dropBoundary);
+        _.each(elements, function (element) {
+            if (element instanceof joint.shapes.circuit.BaseElement && dropBoundary.intersect(element.getBBox()) && (cellView.model != element)) {
+                isValid = true;
+                return {};
+            }
+        });
+        if (isValid) {
+            return { 'isValid': false };
         }
-        else {
-            var portPosition = port.get('position');
-            var boundary = g.rect(portPosition.x, portPosition.y, 4 * unit, 3 * unit);
-
-            var ports = graphDrawing.findModelsInArea(boundary);
-            _.each(ports, function (each_port) {
-                each_port.isOccupied = true;
-                each_port.attr({
-                    '.port': { fill: 'black' }
-                });
-            });
-
-
-        }
-
+        else return {'isValid':true};
     }
 
 
-    
+    var elementDrop = function (cellView, port, moveToInitial) {
+
+        var logicalPos = port.get('logicalPosition');
+        var isOccupied = port.get('isOccupied');
+        if (logicalPos.x + 4 > logical_rows || logicalPos.y + 3 > logical_columns || isOccupied.isOccupied) {
+            moveToInitial();
+        }
+        else {
+
+            //checks whether any element is presetn below it already
+            var responce = isValidDrop(cellView, port);
+
+            if (responce.isValid) {
+
+                //detaching old ports
+                 var oldAttachedPort=cellView.model.get('port');
+                 if(oldAttachedPort.port){
+                     oldAttachedPort.port.set('isOccupied',{'isOccupied':false});
+
+                     var oldPortPosition = oldAttachedPort.port.get('position');
+                     var oldBoundary = g.rect(oldPortPosition.x, oldPortPosition.y, (5 * unit), (3 * unit));
+                     var oldPorts = graphDrawing.findModelsInArea(oldBoundary);
+                     console.log(oldPorts.length+' OLD');
+                     _.each(oldPorts, function (old_each_port) {
+                         if (old_each_port instanceof joint.shapes.circuit.BreadBoardPort) {
+                             old_each_port.attr({
+                                 '.port': { fill: 'white' }
+                             });
+                         }
+                         else if(old_each_port instanceof joint.shapes.circuit.BaseElement){
+                             console.log('LOL- Old');
+                         }
+
+                     });
+                 }
+
+
+                //attaching new ports
+                 var portPosition = port.get('position');
+                 var boundary = g.rect(portPosition.x, portPosition.y, 5 * unit, 3 * unit);
+                 port.set('isOccupied', { 'isOccupied': true });
+                 cellView.model.set('port', { 'port': port });
+                 var ports = graphDrawing.findModelsInArea(boundary);
+                 console.log(ports.length + ' NEW');
+                 _.each(ports, function (each_port) {
+                     if (each_port instanceof joint.shapes.circuit.BreadBoardPort) {
+                         each_port.attr({
+                             '.port': { fill: 'black' }
+                         });
+                     }
+                 });
+
+                 cellView.model.set('position', portPosition);
+            }
+            else {
+                moveToInitial();
+            }
+
+        }
+    }
 
     paperDrawing.on('cell:pointerdown', function (cellView, evt, x, y) {
-            
-        this._p0 = cellView.model.get('position');
+        if (cellView.model instanceof joint.shapes.circuit.BaseElement) {
+            cellView.model.toFront();
+            this._p0 = cellView.model.get('position');
+        }
 
     });
 
-
 });
-    
-
-
-
-
-
-
-
-
-
-
-
 
 
 

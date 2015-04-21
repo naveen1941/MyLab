@@ -18,7 +18,7 @@ joint.shapes.circuit.BaseElement = joint.shapes.basic.Generic.extend({
     markup: '<g class="rotatable element"><g class="scalable"><rect class="body"/><image/></g><circle class="input"/><circle class="output"/><text class="text"/></g>',
     defaults: joint.util.deepSupplement({
         type: 'circuit.BaseElement',
-        size: { width: 120, height: 60 },
+        size: { width: 120, height: 70 },
         attrs: {
             circle: { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 },
             rect: { width: 80, height: 50 },
@@ -35,7 +35,7 @@ joint.shapes.circuit.BaseElement = joint.shapes.basic.Generic.extend({
             },
             '.element': { stroke: 'black', fill: 'transparent', 'stroke-width': 2 },
             //'.body': { width: 50, height: 20, fill: 'transparent' },
-            '.input': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 ,ref: '.body', 'ref-x': -2, 'ref-y': 0.5, magnet: 'passive', port: 'in' },
+            '.input': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 ,ref: '.body', 'ref-x': -2, 'ref-y': 0.5, magnet: true, port: 'in' },
             '.output': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 , ref: '.body', 'ref-dx': 2, 'ref-y': 0.5, magnet: true, port: 'out' }
         }
     }, joint.shapes.basic.Generic.prototype.defaults)
