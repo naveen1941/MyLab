@@ -17,6 +17,12 @@
     height:auto;
     width:auto;
 }
+#readingsPanel{
+    border:1px solid red;
+    margin:auto;
+    height:100px;
+    width:auto;
+}
 .port:hover{
      stroke: red;
     stroke-width: 1px;

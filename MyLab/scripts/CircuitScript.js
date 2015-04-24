@@ -1,6 +1,12 @@
 ﻿
 $(document).ready(function () {
 
+    $('#cell1').html('-');
+    $('#cell2').html('-');
+    $('#cell3').html('-');
+
+    
+
     var droppable;
 
     var dragBoundary = {};
@@ -64,18 +70,18 @@ $(document).ready(function () {
 
         });
         element.initComponent = function (current,voltage, impedance) {
-            this.current = current;
-            this.voltage = voltage;
-            this.impedance=impedance;
+            this.numerical.current = current;
+            this.numerical.voltage = voltage;
+            this.numerical.impedance = impedance;
         }
         element.setCurrent=function (current){
-            this.current=current;
+            this.numerical.current = current;
         }
         element.setVoltage= function (voltage){
-            this.voltage=voltage;
+            this.numerical.voltage = voltage;
         }
         element.setImpedance = function (impedance) {
-            this.impedance=impedance;
+            this.numerical.impedance = impedance;
         }
 
         element.type = type;
@@ -140,20 +146,28 @@ $(document).ready(function () {
     graphDrawing.addCell(button);
 
 
-
+    
 
 
     _.each(elements, function (element) {
         
         switch(element.type){
             case "resistor":
-                element.initComponent(undefined,undefined,100);
+                element.initComponent(undefined, undefined, 100);
+                var num = element.get('numerical');
+                $('#table_body').append("<tr><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
+
                 break;
             case "battery":
-                element.initComponent(undefined,10,1);
+                element.initComponent(undefined, 10, 1);
+                var num = element.get('numerical');
+                $('#table_body').append("<tr><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
+
                 break;
             case "bulb":
-                element.initComponent(undefined,undefined,10);
+                element.initComponent(undefined, undefined, 10);
+                var num=element.get('numerical');
+                $('#table_body').append("<tr><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
                 break;
         }
     });
@@ -198,7 +212,16 @@ $(document).ready(function () {
             var links = graphDrawing.getLinks();
             _.each(links, function (link) {
                 paperDrawing.findViewByModel(link).sendToken(V('circle', { r: 7, fill: 'green' }).node)
+                //paperDrawing.findViewByModel(link).sendToken(V('<path d="M15 8 L0 16 L0 0 Z" />', { fill: 'green' }).node)
             });
+
+            var resistor = elements[0];
+            var battery = elements[1];
+            var bulb = elements[2];
+
+            
+            
+
         }
 
 

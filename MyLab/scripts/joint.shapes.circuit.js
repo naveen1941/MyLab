@@ -57,6 +57,21 @@ joint.shapes.circuit.BaseElement = joint.shapes.basic.Generic.extend({
 //    logicalPosition: { 'posX': -1, 'posY': -1 }
 //});
 
+//joint.shapes.ciruit.Button = joint.shapes.basic.Generic.extend({
+
+//    markup: '<g class="scalable"><rect class="button"/><text class="title"/></g>',
+//    defaults: joint.util.deepSupplement({
+//        type: 'circuit.Button',
+//        size: { width: 50, height: 30 },
+//        attrs: {
+//            rect:{},
+//            text:{}
+//        }
+//    }, joint.shapes.basic.Generic.prototype.defaults),
+
+//    logicalPosition: { 'posX': -1, 'posY': -1 }
+//});
+
 
 
 joint.shapes.circuit.BreadBoardPort = joint.shapes.basic.Generic.extend({

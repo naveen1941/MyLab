@@ -87,6 +87,10 @@
     <Content Include="images\bulbon.png" />
     <Content Include="images\image1.png" />
     <Content Include="images\bulboff.png" />
+    <Content Include="scripts\angular.js" />
+    <Content Include="scripts\angular.min.js" />
+    <Content Include="scripts\bootstrap.min.js" />
+    <Content Include="styles\bootstrap.min.css" />
     <Content Include="scripts\CircuitScript.js" />
     <Content Include="scripts\joint.shapes.chess.js" />
     <Content Include="scripts\joint.shapes.circuit.js" />
@@ -137,6 +141,7 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <Content Include="scripts\angular.min.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
