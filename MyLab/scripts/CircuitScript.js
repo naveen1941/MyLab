@@ -63,31 +63,54 @@ $(document).ready(function () {
             position: { x: x, y: y },
             initPosition: { x: x, y: y },
             port: { 'port': undefined },
-            numerical:{'current':undefined, 'voltage':undefined, 'impedance':undefined},
+            numerical: { 'current': undefined, 'voltage': undefined, 'impedance': undefined, 'r_current': undefined, 'r_voltage': undefined, 'r_impedance': undefined },
             attrs: {
                 image: { 'xlink:href': '../images/'+imagepah }
             }
 
         });
-        element.initComponent = function (current,voltage, impedance) {
-            this.numerical.current = current;
-            this.numerical.voltage = voltage;
-            this.numerical.impedance = impedance;
-        }
-        element.setCurrent=function (current){
-            this.numerical.current = current;
-        }
-        element.setVoltage= function (voltage){
-            this.numerical.voltage = voltage;
-        }
-        element.setImpedance = function (impedance) {
-            this.numerical.impedance = impedance;
+        element.initComponent = function (current, voltage, impedance) {
+            var numerical=this.get('numerical');
+            numerical.current = current;
+            numerical.voltage = voltage;
+            numerical.impedance = impedance;
+
+            numerical.r_current = numerical.current * generateRandomNumber();
+            numerical.r_voltage = numerical.voltage * generateRandomNumber();
+            numerical.r_impedance = numerical.impedance * generateRandomNumber();
         }
 
+        element.setCurrent = function (current) {
+            var numerical = this.get('numerical');
+            numerical.current = current;
+            numerical.r_current = numerical.current * generateRandomNumber();
+
+        }
+        element.setVoltage = function (voltage) {
+            var numerical = this.get('numerical');
+            numerical.voltage = voltage;
+            numerical.r_voltage = numerical.voltage * generateRandomNumber();
+
+        }
+        element.setImpedance = function (impedance) {
+            var numerical = this.get('numerical');
+            numerical.impedance = impedance;
+            numerical.r_impedance = numerical.impedance * generateRandomNumber();
+        }
+
+
+       
         element.type = type;
         elements.push(element);
         graphDrawing.addCell(element);
     }
+
+    var generateRandomNumber = function () {
+        return Math.random() * (1 - 0.95) + 0.95;
+    }
+
+
+
 
     var addPort = function (x, y, x_log, y_log) {
         var element = new joint.shapes.circuit.BreadBoardPort({
@@ -117,7 +140,6 @@ $(document).ready(function () {
         logical_columns = l - 1;
         console.log(logical_rows + ':' + logical_columns);
     }
-
     makeBreadBoard();
 
     var addElementTIcon = function (x, y, imagepah, type) {
@@ -137,13 +159,20 @@ $(document).ready(function () {
     addElementMIcon(350, 20, 'battery.png', 'battery');
     addElementMIcon(600, 20, 'bulbon.png', 'bulb');
 
-    var button = new joint.shapes.basic.Rect({
+    var button1 = new joint.shapes.basic.Rect({
         position: { x: 100, y: 450 },
         size: { width: 100, height: 30 },
         attrs: { rect: { fill: 'blue' }, text: { text: 'Go', fill: 'white' },magnet:false}
     });
 
-    graphDrawing.addCell(button);
+    var button2 = new joint.shapes.basic.Rect({
+        position: { x: 300, y: 450 },
+        size: { width: 100, height: 30 },
+        attrs: { rect: { fill: 'blue' }, text: { text: 'Stop', fill: 'white' }, magnet: false }
+    });
+
+    graphDrawing.addCell(button1);
+    graphDrawing.addCell(button2);
 
 
     
@@ -155,19 +184,19 @@ $(document).ready(function () {
             case "resistor":
                 element.initComponent(undefined, undefined, 100);
                 var num = element.get('numerical');
-                $('#table_body').append("<tr><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
+                $('#table_body').append("<tr id="+ element.get('id') +"><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
 
                 break;
             case "battery":
                 element.initComponent(undefined, 10, 1);
                 var num = element.get('numerical');
-                $('#table_body').append("<tr><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
+                $('#table_body').append("<tr id=" + element.get('id') + "><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
 
                 break;
             case "bulb":
                 element.initComponent(undefined, undefined, 10);
                 var num=element.get('numerical');
-                $('#table_body').append("<tr><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
+                $('#table_body').append("<tr id=" + element.get('id') + "><td>" + element.type + "</td><td>" + num.impedance + "</td><td>" + num.voltage + "</td><td>" + num.current + "</td></tr>");;
                 break;
         }
     });
@@ -215,18 +244,12 @@ $(document).ready(function () {
                 //paperDrawing.findViewByModel(link).sendToken(V('<path d="M15 8 L0 16 L0 0 Z" />', { fill: 'green' }).node)
             });
 
-            var resistor = elements[0];
-            var battery = elements[1];
-            var bulb = elements[2];
-
-            
-            
-
+            startRandom();
         }
 
-
-
     }
+
+    var randomizationTimer;
 
 
     paperDrawing.on('cell:pointerup', function (cellView, evt, x, y) {
@@ -248,12 +271,65 @@ $(document).ready(function () {
                 }
             });
         }
-        else if (cellView.model instanceof joint.shapes.basic.Rect) {
+        else if (cellView.model === button1) {
 
             validateCircuit();
-
+        }
+        else if (cellView.model === button2) {
+            stopRandom();
         }
     });
+
+    var startRandom= function () {
+        randomizationTimer = setInterval(function () { showCircuitReadings() }, 1000);
+    }
+    var stopRandom= function () {
+        window.clearInterval(randomizationTimer);
+    }
+
+    var makeViriablesRandomize = function () {
+
+        _.each(elements, function (element) {
+            var numerical = element.get('numerical');
+            numerical.r_current = numerical.current * generateRandomNumber();
+            numerical.r_voltage = numerical.voltage * generateRandomNumber();
+            numerical.r_impedance = numerical.impedance * generateRandomNumber();
+        });
+        
+    }
+
+    var showCircuitReadings=function(){
+        var resistor = elements[0];
+        var battery = elements[1];
+        var bulb = elements[2];
+
+        makeViriablesRandomize();
+
+        var totalImpedance = resistor.get('numerical').r_impedance + battery.get('numerical').r_impedance + bulb.get('numerical').r_impedance;
+        var totalCurrent = battery.get('numerical').r_voltage / totalImpedance;
+
+        _.each(elements, function (element) {
+            console.log(element.get('numerical'));
+            element.get('numerical').r_current = totalCurrent;
+            console.log(element.get('numerical'));
+
+        });
+
+        _.each(elements, function (element) {
+            console.log(element.get('numerical'));
+            var numerical = element.get('numerical');
+            numerical.r_voltage = numerical.r_current * numerical.r_impedance;
+            console.log(element.get('numerical'));
+
+        });
+
+        $("#" + resistor.get('id')).html("<td>" + resistor.type + "</td><td>" + resistor.get('numerical').r_impedance + "</td><td>" + resistor.get('numerical').r_voltage + "</td><td>" + resistor.get('numerical').r_current + "</td>");
+        $("#" + battery.get('id')).html("<td>" + battery.type + "</td><td>" + battery.get('numerical').r_impedance + "</td><td>" + battery.get('numerical').r_voltage + "</td><td>" + battery.get('numerical').r_current + "</td>");
+        $("#" + bulb.get('id')).html("<td>" + bulb.type + "</td><td>" + bulb.get('numerical').r_impedance + "</td><td>" + bulb.get('numerical').r_voltage + "</td><td>" + bulb.get('numerical').r_current + "</td>");
+
+    }
+
+   
 
     paperDrawing.on('cell:pointermove', function (cellView, evt, x, y) {
 
