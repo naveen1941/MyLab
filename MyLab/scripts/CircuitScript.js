@@ -1,6 +1,42 @@
-﻿
+﻿google.load('visualization', '1', { packages: ['corechart', 'line'] });
+google.setOnLoadCallback(drawBasic);
+function drawBasic() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'X');
+    data.addColumn('number', 'Dogs');
+
+    data.addRows([
+      [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
+      [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
+      [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
+      [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
+      [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53],
+      [30, 55], [31, 60], [32, 61], [33, 59], [34, 62], [35, 65],
+      [36, 62], [37, 58], [38, 55], [39, 61], [40, 64], [41, 65],
+      [42, 63], [43, 66], [44, 67], [45, 69], [46, 69], [47, 70],
+      [48, 72], [49, 68], [50, 66], [51, 65], [52, 67], [53, 70],
+      [54, 71], [55, 72], [56, 73], [57, 75], [58, 70], [59, 68],
+      [60, 64], [61, 60], [62, 65], [63, 67], [64, 68], [65, 69],
+      [66, 70], [67, 72], [68, 75], [69, 80]
+    ]);
+
+    var options = {
+        hAxis: {
+            title: 'Time'
+        },
+        vAxis: {
+            title: 'Popularity'
+        }
+    };
+    var chart = new google.visualization.LineChart(document.getElementById('chartPanel'));
+
+    chart.draw(data, options);
+}
+
+
 $(document).ready(function () {
 
+        
     $('#cell1').html('-');
     $('#cell2').html('-');
     $('#cell3').html('-');
@@ -28,15 +64,18 @@ $(document).ready(function () {
         width: canvasWidth,
         height: canvasHeight,
         model: graphDrawing,
+        defaultLink: new joint.shapes.circuit.Wire,
         gridSize: 1,
         async: true,
         snapLinks :true,
         animation: true,
         validateConnection: function (vs, ms, vt, mt, e, vl) {
 
+           
+
             if (e === 'target') {
                 // target requires an input port to connect
-                if (!mt || !mt.getAttribute('class') || mt.getAttribute('class').indexOf('input') < 0) return false;
+                //if (!mt || !mt.getAttribute('class') || mt.getAttribute('class').indexOf('input') < 0) return false;
 
                 // check whether the port is being already used
                 var portUsed = _.find(this.model.getLinks(), function (link) {
@@ -51,7 +90,7 @@ $(document).ready(function () {
             } else { // e === 'source'
 
                 // source requires an output port to connect
-                return ms && ms.getAttribute('class') && ms.getAttribute('class').indexOf('output') >= 0;
+                //return ms && ms.getAttribute('class') && ms.getAttribute('class').indexOf('output') >= 0;
             }
         }
     });
@@ -64,9 +103,9 @@ $(document).ready(function () {
             initPosition: { x: x, y: y },
             port: { 'port': undefined },
             numerical: { 'current': undefined, 'voltage': undefined, 'impedance': undefined, 'r_current': undefined, 'r_voltage': undefined, 'r_impedance': undefined },
-            attrs: {
-                image: { 'xlink:href': '../images/'+imagepah }
-            }
+            //attrs: {
+            //    image: { 'xlink:href': '../images/'+imagepah }
+            //}
 
         });
         element.initComponent = function (current, voltage, impedance) {
@@ -140,6 +179,7 @@ $(document).ready(function () {
         logical_columns = l - 1;
         console.log(logical_rows + ':' + logical_columns);
     }
+
     makeBreadBoard();
 
     var addElementTIcon = function (x, y, imagepah, type) {
@@ -170,6 +210,8 @@ $(document).ready(function () {
         size: { width: 100, height: 30 },
         attrs: { rect: { fill: 'blue' }, text: { text: 'Stop', fill: 'white' }, magnet: false }
     });
+
+    var line = g.line(g.point(10, 20), g.point(50, 600));
 
     graphDrawing.addCell(button1);
     graphDrawing.addCell(button2);
@@ -250,6 +292,11 @@ $(document).ready(function () {
     }
 
     var randomizationTimer;
+
+    paperDrawing.on('cancel:click', function (cellView, evt, x, y) {
+
+        console.log('cancel clicked');
+    });
 
 
     paperDrawing.on('cell:pointerup', function (cellView, evt, x, y) {
@@ -361,7 +408,7 @@ $(document).ready(function () {
 
         var logicalPos = port.get('logicalPosition');
         var isOccupied = port.get('isOccupied');
-        if (logicalPos.x + 4 > logical_rows || logicalPos.y + 3 > logical_columns || isOccupied.isOccupied) {
+        if (logicalPos.x + 4 > logical_rows || logicalPos.y + 3 > logical_columns || isOccupied.isOccupied || !port) {
             moveToInitial();
         }
         else {
@@ -403,6 +450,12 @@ $(document).ready(function () {
                  });
 
                  cellView.model.set('position', portPosition);
+
+                    
+                 var newElement = cellView.model.clone();
+                 newElement.set('position',cellView.model.get('initPosition'));
+                 graphDrawing.addCell(newElement);
+
             }
             else {
                 moveToInitial();
@@ -410,6 +463,14 @@ $(document).ready(function () {
 
         }
     }
+
+    paperDrawing.on('cell:mouseover ', function (cellView, evt) {
+
+
+        
+
+    });
+   
 
     paperDrawing.on('cell:pointerdown', function (cellView, evt, x, y) {
         if (cellView.model instanceof joint.shapes.circuit.BaseElement) {
