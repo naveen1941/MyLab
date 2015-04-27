@@ -220,7 +220,7 @@ $(document).ready(function () {
 
     addElementMIcon(100, 40, 'image1.png', 'resistor');
     addElementMIcon(350, 40, 'battery.png', 'battery');
-    addElementMIcon(600, 40, 'bulbon.png', 'bulb');
+    addElementMIcon(600, 40, 'bulboff.png', 'bulb');
 
     var button1 = new joint.shapes.basic.Rect({
         position: { x: (canvasWidth/2)-50, y: canvasHeight - 40 },
@@ -275,7 +275,7 @@ $(document).ready(function () {
         }
     });
 
-    var validateCircuit = function () {
+    var validateCircuit = function (cellView) {
         var isConnected = false;
 
         var startElement = elements[0];
@@ -299,12 +299,23 @@ $(document).ready(function () {
             }
         }
 
-
         if (isConnected)
         {
            
             button1.set('size', { width: 0, height: 0 });
             button2.set('size', { width: 100, height: 30 });
+
+            //var bulbOn = cellView.model.clone();
+            //bulbOn.set('image', { 'xlink:href': '../images/bulbon.png' });
+
+            
+            //bulboff.remove();
+            //elements[2] = bulbOn;
+
+            //graphDrawing.addCell(bulbOn);
+
+            var bul = elements[2];
+            bulb.set('image',{ 'xlink:href': '../images/bulbon.png'});
             startRandom();
         }
 
@@ -348,12 +359,13 @@ $(document).ready(function () {
         }
         else if (cellView.model === button1) {
           
-            validateCircuit();
+            validateCircuit(cellView);
         }
         else if (cellView.model === button2) {
             //button1.set('text', { text: "Start" });
             button2.set('size', { width: 0, height: 0 });
             button1.set('size', { width: 100, height: 30 });
+            elements[2].set('image', { 'xlink:href': '../images/bulboff.png' });
 
             stopRandom();
         }
