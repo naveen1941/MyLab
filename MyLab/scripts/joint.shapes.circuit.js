@@ -30,18 +30,37 @@ joint.shapes.circuit.BaseElement = joint.shapes.basic.Generic.extend({
                 'font-size': '14px'
             },
             image: {
-                width: 48, height: 48,
-                ref: '.body', 'y-alignment': 'middle', 'ref-y': 15
+                width: 80, height: 50,
+                ref: '.body',  'ref-y': 0
             },
-            '.cancelIcon': { ref: '.body', 'ref-dx': 15, 'ref-y': -15, fill: 'red', 'stroke-width': 0, r: 15, 'color': 'white' },
-            '.cancelIconText': { ref: '.body', 'ref-dx': 15, 'ref-y': -22, text: 'X', fill: 'white', foreground: 'white', 'font-size': 20, 'stroke-width': 0 },
+            '.cancelIcon': { ref: '.body', 'ref-dx': 15, 'ref-y': -15, fill: 'red', 'stroke-width': 0, r: 0, 'color': 'white' },
+            //'.cancelIconText': { ref: '.body', 'ref-dx': 15, 'ref-y': -22, text: 'X', fill: 'white', foreground: 'white', 'font-size': 20, 'stroke-width': 0 },
             '.element': { stroke: 'black', fill: 'transparent', 'stroke-width': 2 },
             //'.body': { width: 50, height: 20, fill: 'transparent' },
-            '.input': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 ,ref: '.body', 'ref-x': -2, 'ref-y': 0.5, magnet: true, port: 'in' },
-            '.output': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 , ref: '.body', 'ref-dx': 2, 'ref-y': 0.5, magnet: true, port: 'out' }
+            '.input': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 ,ref: '.body', 'ref-x': 0, 'ref-y': 0.5, magnet: true, port: 'in' },
+            '.output': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 , ref: '.body', 'ref-dx': 0, 'ref-y': 0.5, magnet: true, port: 'out' }
         }
     }, joint.shapes.basic.Generic.prototype.defaults)
 });
+
+joint.shapes.circuit.ImageBackground = joint.shapes.basic.Generic.extend({
+
+    markup: '<g class="rotatable element"><g class="scalable"><rect class="body"/><image/></g></g>',
+    defaults: joint.util.deepSupplement({
+        type: 'circuit.ImageBackground',
+        size: { width: 120, height: 70 },
+        attrs: {
+            image: {
+                width: 48, height: 48,
+                ref: '.body', 'y-alignment': 'middle', 'ref-y': 15
+            }
+        }
+    }, joint.shapes.basic.Generic.prototype.defaults)
+});
+
+
+
+
 
 joint.shapes.circuit.Wire = joint.dia.Link.extend({
 
@@ -118,7 +137,7 @@ joint.shapes.circuit.BreadBoardPort = joint.shapes.basic.Generic.extend({
         type: 'circuit.BreadBoardPort',
         size: { width: 7, height: 7 },
         attrs: {
-        circle: { r: 3, stroke: 'black', fill: 'transparent', magnet: true,'stroke-width': 2 },
+        circle: { r: 3, stroke: 'black', fill: 'transparent', magnet: false,'stroke-width': 2 },
         }
     }, joint.shapes.basic.Generic.prototype.defaults),
 

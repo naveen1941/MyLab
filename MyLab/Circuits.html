@@ -20,32 +20,65 @@
 
 </head>
 <body >
+    
+   
+    <div id="mainContainer">
+        <div id="canvas">
+            <div id="drawingPanel">
 
-    <div id="canvas">
-        <div id="widgetPanel">
+            </div>
+            <div id="readingsPanelInstant">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Impedance</th>
+                            <th>Voltage</th>
+                            <th>Current</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="graphPanel">
+            <input id="takeReading" type="button" value="Take Reading" align="middle" name="Take reading" />
+            <div id="graphControls">
+                <select id="componentSelect">
+                    <option value="-">Component</option>
+                    <option value="resistor">Resistor</option>
+                    <option value="battery">Battery</option>
+                    <option value="bulb">Bulb</option>
+                </select>
+                <select id="xaxisSelect">
+                    <option value="-">X-Axis</option>
+                    <option value="impedance">Resistance</option>
+                    <option value="current">Current  </option>
+                    <option value="voltage">Voltage  </option>
+                </select>
+                <select id="yaxisSelect">
+                    <option value="-">Y-Axis</option>
+                    <option value="impedance">Resistance  </option>
+                    <option value="current">Current  </option>
+                    <option value="voltage">Voltage  </option>
+                </select>
+            </div>
+            <div id="readingsPanelParticular">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Something (X-axis)</th>
+                            <th>Something (Y-axis)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body"></tbody>
+                </table>
+            </div>
+            <div id="chartPanel">
+
+            </div>
 
         </div>
-        <div id="drawingPanel">
-
-        </div>
-        <div id="readingsPanel">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Impedance</th>
-                        <th>Voltage</th>
-                        <th>Current</th>
-                    </tr>
-                </thead>
-                <tbody id="table_body">
-                </tbody>
-            </table>
-        </div>
-        <div id="chartPanel">
-
-        </div>
-        
-    </div>
+    </div id="mainContainer">
 </body>
 </html>
