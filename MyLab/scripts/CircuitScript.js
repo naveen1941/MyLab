@@ -23,7 +23,23 @@ function drawBasic() {
     chart.draw(data, options);
 }
 
-var experimentReadings = {};
+var experimentReadings = {
+        'Resistor': {
+            'Impedance': [],
+            'Voltage': [],
+            'Current': []
+        },
+        'Battery': {
+            'Impedance': [],
+            'Voltage': [],
+            'Current': []
+        },
+        'Bulb': {
+            'Impedance': [],
+            'Voltage': [],
+            'Current': []
+        }
+    };
 
 
 $(document).ready(function () {
@@ -63,14 +79,14 @@ $(document).ready(function () {
         animation: true,
         validateConnection: function (vs, ms, vt, mt, e, vl) {
 
-            if (vs.model instanceof joint.shapes.circuit.BreadBoardPort) {
-                console.log();
+            if (vs.model instanceof joint.shapes.circuit.BreadBoardPort || ms.model instanceof joint.shapes.circuit.BreadBoardPort) {
+                return false;
             }
            
 
             if (e === 'target') {
                 // target requires an input port to connect
-                //if (!mt || !mt.getAttribute('class') || mt.getAttribute('class').indexOf('input') < 0) return false;
+                if (!mt || !mt.getAttribute('class') || mt.getAttribute('class').indexOf('input') < 0) return false;
 
                 // check whether the port is being already used
                 var portUsed = _.find(this.model.getLinks(), function (link) {
@@ -85,7 +101,7 @@ $(document).ready(function () {
             } else { // e === 'source'
 
                 // source requires an output port to connect
-                //return ms && ms.getAttribute('class') && ms.getAttribute('class').indexOf('output') >= 0;
+                return ms && ms.getAttribute('class') && ms.getAttribute('class').indexOf('output') >= 0;
             }
         }
     });
@@ -154,8 +170,6 @@ $(document).ready(function () {
     }
 
 
-
-
     var addPort = function (x, y, x_log, y_log) {
         var element = new joint.shapes.circuit.BreadBoardPort({
             position: { x: x, y: y },
@@ -183,7 +197,7 @@ $(document).ready(function () {
 
         logical_rows = k - 1;
         logical_columns = l - 1;
-        console.log(logical_rows + ':' + logical_columns);
+        //console.log(logical_rows + ':' + logical_columns);
     }
 
 
@@ -225,20 +239,24 @@ $(document).ready(function () {
     var button1 = new joint.shapes.basic.Rect({
         position: { x: (canvasWidth/2)-50, y: canvasHeight - 40 },
         size: { width: 100, height: 30 },
-        attrs: { rect: { fill: 'blue' }, text: { text: 'Start', fill: 'white' },magnet:false}
+        attrs: {
+            rect: { fill: 'blue' },
+            text: { text: 'Start', fill: 'white' },
+            magnet: false
+        }
     });
 
-    var button2 = new joint.shapes.basic.Rect({
-        position: { x: (canvasWidth / 2) - 50, y: canvasHeight - 40 },
-        size: { width: 100, height: 30 },
-        attrs: { rect: { fill: 'blue' }, text: { text: 'Stop', fill: 'white' }, magnet: false }
-    });
+    //var button2 = new joint.shapes.basic.Rect({
+    //    position: { x: (canvasWidth / 2) - 50, y: canvasHeight - 40 },
+    //    size: { width: 100, height: 30 },
+    //    attrs: { rect: { fill: 'blue' }, text: { text: 'Stop', fill: 'white' }, magnet: false }
+    //});
 
     var line = g.line(g.point(10, 20), g.point(50, 600));
 
-    button2.set('size', { width: 0, height: 0 });
+   // button2.set('size', { width: 0, height: 0 });
     graphDrawing.addCell(button1);
-    graphDrawing.addCell(button2);
+   // graphDrawing.addCell(button2);
 
 
 
@@ -275,8 +293,10 @@ $(document).ready(function () {
         }
     });
 
+    var isConnected = false;
+
     var validateCircuit = function (cellView) {
-        var isConnected = false;
+        
 
         var startElement = elements[0];
         var progressElement = startElement;
@@ -302,11 +322,10 @@ $(document).ready(function () {
         if (isConnected)
         {
            
-            button1.set('size', { width: 0, height: 0 });
-            button2.set('size', { width: 100, height: 30 });
+            //button1.set('size', { width: 0, height: 0 });
+            //button2.set('size', { width: 100, height: 30 });
 
-            //var bulbOn = cellView.model.clone();
-            //bulbOn.set('image', { 'xlink:href': '../images/bulbon.png' });
+           
 
             
             //bulboff.remove();
@@ -315,7 +334,34 @@ $(document).ready(function () {
             //graphDrawing.addCell(bulbOn);
 
             var bul = elements[2];
-            bulb.set('image',{ 'xlink:href': '../images/bulbon.png'});
+
+            bul.attr({
+                image: { 'xlink:href': '../images/bulbon.png' }
+           });
+            button1.attr({
+                text: { text: 'Stop' }
+            });
+           
+            //var element = new joint.shapes.circuit.BaseElement({
+            //    position: bul.get('position'),
+            //    initPosition: bul.get('initPosition'),
+            //    port: bul.get('port'),
+            //    numerical: bul.get('numerical'),
+            //    attrs: {
+            //        image: { 'xlink:href': '../images/bulbon.png' },
+            //        '.body': { 'stroke-width': 0 }
+            //    }
+            //});
+            //element.type = 'bulb';
+
+            //var outLinks = graphDrawing.getConnectedLinks(bul, { outbound: true });
+            //var inLinks = graphDrawing.getConnectedLinks(bul, { inbound: true });
+
+            //bul.remove({'disconnectLinks':true});
+
+            //graphDrawing.addCell(element);
+
+           
             startRandom();
         }
 
@@ -325,30 +371,53 @@ $(document).ready(function () {
 
     paperDrawing.on('cancel:click', function (cellView, evt, x, y) {
 
-        console.log('cancel clicked');
+        //console.log('cancel clicked');
+    });
+
+
+    graphDrawing.on('change:position', function (cell) {
+
+        if (cell instanceof joint.shapes.circuit.ImageBackground) {
+            cell.set('position', { x: 1, y: 320 });
+        }
+
+        //// has an obstacle been moved? Then reroute the link.
+        //if (_.contains(elements, cell)) {
+        //    var links = graphDrawing.getLinks();
+        //    _.each(links, function (link) {
+        //        paperDrawing.findViewByModel(link).update();
+        //    });
+            
+        //}
     });
 
 
     paperDrawing.on('cell:pointerup', function (cellView, evt, x, y) {
 
 
-        var event = 'Start';
-        try{
-            event=button1.get('text').text;
-        }
-        catch(ex){
+        var event = 'Nothing';
+        //try{
+        //    event=button1.get('text').text;
+        //}
+        //catch(ex){
 
+        //}
+        if (cellView.model instanceof joint.shapes.basic.Rect) {
+            event = cellView.model.get('attrs').text.text;
         }
+         
 
         if (cellView.model instanceof joint.shapes.circuit.BaseElement) {
 
 
             var p0 = this._p0;
+            var isValidDrop = false;
             var _pos_cellView = cellView.model.get('position');
             var _referencePortBoundary = g.rect(_pos_cellView.x, _pos_cellView.y, unit, unit);
             var ports = graphDrawing.get('cells').find(function (cell) {
                 if (cell instanceof joint.shapes.circuit.BreadBoardPort) {
                     if (_referencePortBoundary.intersect(cell.getBBox())) {
+                        isValidDrop = true;
                         elementDrop(cellView, cell, function () {
                             cellView.model.set('position', p0);
                         });
@@ -356,17 +425,26 @@ $(document).ready(function () {
                     }
                 }
             });
+            if(!isValidDrop){
+                cellView.model.set('position', p0);
+            }
+
         }
-        else if (cellView.model === button1) {
+        else if (event == 'Start') {
           
             validateCircuit(cellView);
         }
-        else if (cellView.model === button2) {
-            //button1.set('text', { text: "Start" });
-            button2.set('size', { width: 0, height: 0 });
-            button1.set('size', { width: 100, height: 30 });
-            elements[2].set('image', { 'xlink:href': '../images/bulboff.png' });
+        else if (event == 'Stop') {
 
+            isConnected = false;
+
+            cellView.model.attr({
+                text: {text:'Start'}
+            });
+
+            elements[2].attr({
+                image: { 'xlink:href': '../images/bulboff.png' }
+            });
             stopRandom();
         }
     });
@@ -409,17 +487,17 @@ $(document).ready(function () {
         var totalCurrent = battery.get('numerical').r_voltage / totalImpedance;
 
         _.each(elements, function (element) {
-            console.log(element.get('numerical'));
+            //console.log(element.get('numerical'));
             element.get('numerical').r_current = totalCurrent;
-            console.log(element.get('numerical'));
+            //console.log(element.get('numerical'));
 
         });
 
         _.each(elements, function (element) {
-            console.log(element.get('numerical'));
+            //console.log(element.get('numerical'));
             var numerical = element.get('numerical');
             numerical.r_voltage = numerical.r_current * numerical.r_impedance;
-            console.log(element.get('numerical'));
+            //console.log(element.get('numerical'));
 
         });
 
@@ -431,11 +509,100 @@ $(document).ready(function () {
     }
 
     $('#takeReading').click(function () {
+        if (isConnected) {
+            var resistor = elements[0].get('numerical');
+            var battery = elements[1].get('numerical');
+            var bulb = elements[2].get('numerical');
 
+            experimentReadings.Resistor.Impedance.push(roundOff(resistor.impedance,3));
+            experimentReadings.Resistor.Voltage.push(roundOff(resistor.r_voltage,3));
+            experimentReadings.Resistor.Current.push(roundOff(resistor.r_current,3));
 
+            experimentReadings.Battery.Impedance.push(roundOff(battery.impedance,3));
+            experimentReadings.Battery.Voltage.push(roundOff(battery.voltage,3));
+            experimentReadings.Battery.Current.push(roundOff(battery.r_current,3));
+                
+            experimentReadings.Bulb.Impedance.push(roundOff(bulb.impedance,3));
+            experimentReadings.Bulb.Voltage.push(roundOff(bulb.r_voltage,3));
+            experimentReadings.Bulb.Current.push(roundOff(bulb.r_current,3));
 
+            //console.log(experimentReadings);
+        }   
+       
 
     });
+
+    var roundOff = function(input, positions){
+        return Math.round(input * Math.pow(10, positions)) / (Math.pow(10, positions));
+    }
+    var currentComponent = 'Component';
+    var currentXreadings = 'X-Axis';
+    var currentYreadings = 'Y-Axis';
+
+
+    $("#componentSelect").change(function () {
+        if (currentComponent != $("#componentSelect option:selected").text()) {
+            currentComponent = $("#componentSelect option:selected").text();
+            console.log(currentComponent);
+        }
+        showReadingsTable();
+    });
+
+    $("#xaxisSelect").change(function () {
+        if (currentXreadings != $("#xaxisSelect option:selected").text()) {
+            currentXreadings = $("#xaxisSelect option:selected").text();
+        }
+        showReadingsTable();
+    });
+
+    $("#yaxisSelect").change(function () {
+        if (currentYreadings != $("#yaxisSelect option:selected").text()) {
+            currentYreadings = $("#yaxisSelect option:selected").text();
+        }
+        showReadingsTable();
+
+    });
+
+    var showReadingsTable = function () {
+        if (currentComponent != 'Component' && currentXreadings != 'X-Axis' && currentYreadings != 'Y-Axis') {
+            var currentComponentReadings = experimentReadings[currentComponent];
+            var xReadings = currentComponentReadings[currentXreadings ];
+            var yReadings = currentComponentReadings[currentYreadings ];
+
+            $('#table_body_readings').html('')
+
+            var htmlChunk = '';
+            var arrayChunk = '';
+
+            for (var i = 0; i < xReadings.length; i++) {
+                htmlChunk += '<tr><td>' + xReadings[i] + '</td><td>' + yReadings[i] + '</td></tr>'
+                arrayChunk += '[' + xReadings[i]+', '+ yReadings[i]+ '], ';
+            }
+
+            $('#table_body_readings').html(htmlChunk)
+            showGraph(arrayChunk.substring(0, arrayChunk.length-2));
+        }
+    }
+    var showGraph = function(array) {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'X');
+        data.addColumn('number', 'Impedance');
+
+        var aaa = $.parseJSON('[' + array + ']');
+
+        data.addRows(aaa);
+        var options = {
+            hAxis: {
+                title: currentXreadings
+            },
+            vAxis: {
+                title: currentYreadings
+            }
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('chartPanel'));
+        chart.draw(data, options);
+    }
+
 
    
 

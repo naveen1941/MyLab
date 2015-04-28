@@ -137,7 +137,7 @@ joint.shapes.circuit.BreadBoardPort = joint.shapes.basic.Generic.extend({
         type: 'circuit.BreadBoardPort',
         size: { width: 7, height: 7 },
         attrs: {
-        circle: { r: 3, stroke: 'black', fill: 'transparent', magnet: false,'stroke-width': 2 },
+        circle: { r: 3, stroke: 'black', fill: 'transparent', magnet:'none','stroke-width': 2 },
         }
     }, joint.shapes.basic.Generic.prototype.defaults),
 
