@@ -8,39 +8,47 @@
      width: 1600px !important;
     height: 800px !important;
     margin: auto !important;
-    margin-top: 100px !important;
+    margin-top: 50px !important;
     vertical-align: middle;
+
+    /*background-color:white;*/
+}
+#graphReadingsTable{
+    height:auto;
 }
 
-
 #readingsPanelInstant{
-    width: auto;
-    height: auto;
+    width: 550px;
+    margin: auto;
+    height: 173px;
+    border:4px solid lightgray;
 }
 
 table{
+    height: inherit;
     background-color:white !important;
 }
 #canvas {
-        border:1px solid red;
+        border:3px solid lightgray;
     width: 1100px;
-    height: 800px;
+    height: 810px;
     margin: auto;
     float:left;
-  
+      background: url('../images/wooden_texture.jpg');
+
 }
 #graphPanel{
     float:left;
     width: 500px;
-    height:800px;
-    border:1px solid red;
+    height:810px;
+    border:3px solid lightgray;
 }
 
 #drawingPanel{
     margin:auto;
-    height:600px !important;
+    height: 625px;
     width:auto;
-    background: url('../images/wooden_texture.jpg') no-repeat;
+    
     background-size: 100%;
 }
 select{
@@ -48,15 +56,137 @@ select{
 }
 
 
-#takeReading{
-
-    width:auto;
-    margin:auto;
-}
-
 #graphControls{
+   
+    width: 320px;
+    margin: auto;
     margin-top:20px;
     margin-bottom:20px;
-    margin-left:20px;
 }
 
+.cancelIcon{
+    visibility:hidden;
+}
+
+.cancelIconText{
+    visibility:hidden;
+}
+#slidersPanel{
+    /*border:1px solid red;*/
+    width:300px;
+    height:170px;
+    margin:auto;
+    border:3px solid lightgray;
+
+}
+th,tr{
+    text-align:center !important;
+}
+#currentElementSlider{
+    text-align:center;
+    margin: auto;
+}
+#readingsPanelDiv{
+    padding-top: 20px;
+    width:400px;
+    height:400px;
+    margin:auto;
+    background-color:white;
+    border:3px solid lightgray;
+
+    /*border:1px solid red;*/
+}
+#readingsPanelParticular{
+    /*border:1px solid red;*/   
+    height:275px;
+    overflow-y:auto;
+    background-color:white;
+
+}
+#chartPanelDiv{
+  background-color:white;
+        border:3px solid lightgray;
+}
+#chartPanel{
+    width:auto;
+    height:200px;
+  
+
+    /*border:1px solid red;*/   
+}
+
+
+#takeReading{
+  width: 115px;
+  margin: 0 auto;
+  text-align: center;
+  display: block;
+}
+
+
+.slider{
+
+    margin-bottom:10px;
+    display:inline;
+}
+/* Webkit */
+input[type=range],
+input[type=range], 
+input[type=range] {
+	-webkit-appearance: none;
+	width: 100%;
+	border-radius: 8px;
+	height: 7px;
+	border: 1px solid #bdc3c7;
+	background-color: #fff; 
+}
+input[type='range']::-webkit-slider-thumb,
+input[type='range']::-webkit-slider-thumb,
+input[type='range']::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	background-color: #ecf0f1;
+	border: 1px solid #bdc3c7;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+/* Mozilla */
+input[type=range] {
+	width: 100%;
+}
+input[type=range]::-moz-range-track {
+	border-radius: 8px;
+	height: 7px;
+	border: 1px solid #bdc3c7;
+	background-color: #fff;
+}
+input[type=range]::-moz-range-thumb {
+	background: #ecf0f1;
+	border: 1px solid #bdc3c7;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+/* Internet Explorer */
+input[type="range"]::-ms-fill-lower,
+input[type="range"]::-ms-fill-upper {
+	background: transparent;
+}
+input[type="range"]::-ms-track {
+    border-radius: 8px;
+	height: 7px;
+	border: 1px solid #bdc3c7;
+	background-color: #fff;
+}
+input[type="range"]::-ms-thumb {
+	background-color: #ecf0f1;
+	border: 1px solid #bdc3c7;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	cursor: pointer;
+}

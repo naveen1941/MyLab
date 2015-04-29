@@ -1,27 +1,10 @@
 ﻿google.load('visualization', '1', { packages: ['corechart', 'line'] });
 google.setOnLoadCallback(drawBasic);
 function drawBasic() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('number', 'X');
-    data.addColumn('number', 'Dogs');
-
-    data.addRows([
-      [0, 0], [1, 10], [2, 23], [3, 17], [4, 18], [5, 9],
-      [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35]
-    ]);
-
-    var options = {
-        hAxis: {
-            title: 'Time'
-        },
-        vAxis: {
-            title: 'Popularity'
-        }
-    };
-    var chart = new google.visualization.LineChart(document.getElementById('chartPanel'));
-
-    chart.draw(data, options);
+   
 }
+
+var currentElementHoldsSlide = '';
 
 var experimentReadings = {
         'Resistor': {
@@ -126,7 +109,8 @@ $(document).ready(function () {
             numerical: { 'current': undefined, 'voltage': undefined, 'impedance': undefined, 'r_current': undefined, 'r_voltage': undefined, 'r_impedance': undefined },
             attrs: {
                 image: image,
-                '.body': { 'stroke-width': 0}
+                '.body': { 'stroke-width': 0 },
+                '.cancelIcon':{r:15}
             }
         });
         element.initComponent = function (current, voltage, impedance) {
@@ -181,17 +165,17 @@ $(document).ready(function () {
     }
 
     var makeBreadBoard = function () {
-        // for(var i=1,k=0;i<canvasWidth/unit;i++,k++){
-        //     for (var j = 4,l=0 ; j <(canvasHeight/unit)-1; j++,l++) {
-        //         addPort(i*unit,j*unit, k,l);
-        //     }
-        //}
-
-        for (var i = 1, k = 0; i < 15; i++, k++) {
-            for (var j = 4, l = 0 ; j < 15; j++, l++) {
-                addPort(i * unit, j * unit, k, l);
-            }
+         for(var i=1,k=0;i<canvasWidth/unit;i++,k++){
+             for (var j = 4,l=0 ; j <(canvasHeight/unit)-1; j++,l++) {
+                 addPort(i*unit,j*unit, k,l);
+             }
         }
+
+        //for (var i = 1, k = 0; i < 15; i++, k++) {
+        //    for (var j = 4, l = 0 ; j < 15; j++, l++) {
+        //        addPort(i * unit, j * unit, k, l);
+        //    }
+        //}
 
 
 
@@ -209,7 +193,7 @@ $(document).ready(function () {
         },
     });
 
-    graphDrawing.addCell(breadboardBG);
+   graphDrawing.addCell(breadboardBG);
 
     makeBreadBoard();
 
@@ -232,9 +216,9 @@ $(document).ready(function () {
         graphDrawing.addCell(element);
     }
 
-    addElementMIcon(100, 40, 'image1.png', 'resistor');
-    addElementMIcon(350, 40, 'battery.png', 'battery');
-    addElementMIcon(600, 40, 'bulboff.png', 'bulb');
+    addElementMIcon(100+100, 40, 'image1.png', 'resistor');
+    addElementMIcon(350+100, 40, 'battery.png', 'battery');
+    addElementMIcon(600+100, 40, 'bulboff.png', 'bulb');
 
     var button1 = new joint.shapes.basic.Rect({
         position: { x: (canvasWidth/2)-50, y: canvasHeight - 40 },
@@ -526,7 +510,8 @@ $(document).ready(function () {
             experimentReadings.Bulb.Voltage.push(roundOff(bulb.r_voltage,3));
             experimentReadings.Bulb.Current.push(roundOff(bulb.r_current,3));
 
-            //console.log(experimentReadings);
+
+            showReadingsTable();
         }   
        
 
@@ -565,6 +550,10 @@ $(document).ready(function () {
 
     var showReadingsTable = function () {
         if (currentComponent != 'Component' && currentXreadings != 'X-Axis' && currentYreadings != 'Y-Axis') {
+
+            $('#xAxisH').text(currentXreadings);
+            $('#yAxisH').text(currentYreadings);
+
             var currentComponentReadings = experimentReadings[currentComponent];
             var xReadings = currentComponentReadings[currentXreadings ];
             var yReadings = currentComponentReadings[currentYreadings ];
@@ -701,6 +690,15 @@ $(document).ready(function () {
    
 
     paperDrawing.on('cell:pointerdown', function (cellView, evt, x, y) {
+
+        var className = evt.target.getAttribute('class');
+        if (className == 'cancelIcon' || className == 'cancelIconText') {
+            cellView.model.remove();
+        }
+
+        showHideSliders(cellView.model.type);
+       
+
         if (cellView.model instanceof joint.shapes.circuit.BaseElement) {
             cellView.model.toFront();
             this._p0 = cellView.model.get('position');
@@ -708,12 +706,74 @@ $(document).ready(function () {
 
     });
 
+    var showHideSliders = function (type) {
+        if (type == 'resistor') {
+            currentElementHoldsSlide = 'resistor';
+            $('#resistance').val(elements[0].get('numerical').impedance);
+            $('#currentElementSlider').text('Resistor');
+            $('#resistorSliderDiv').css("visibility", "visible");
+            $('#voltageSliderDiv').css("visibility", "hidden");
+            $('#currentSliderDiv').css("visibility", "hidden");
+
+        }
+        else if (type == 'battery') {
+            currentElementHoldsSlide = 'battery';
+            $('#voltage').val(elements[1].get('numerical').voltage);
+            $('#currentElementSlider').text('Battery');
+            $('#resistorSliderDiv').css("visibility", "hidden");
+            $('#voltageSliderDiv').css("visibility", "visible");
+            $('#currentSliderDiv').css("visibility", "hidden");
+        }
+        else if (type == 'bulb') {
+            currentElementHoldsSlide = 'bulb';
+            $('#current').val(elements[2].get('numerical').impedance);
+            $('#currentElementSlider').text('Bulb');
+            $('#resistorSliderDiv').css("visibility", "visible");
+            $('#voltageSliderDiv').css("visibility", "hidden");
+            $('#currentSliderDiv').css("visibility", "hidden");
+        }
+    }
+    showHideSliders('resistor');
+
     graphDrawing.on('remove', function (cell) {
 
         //+++ ADD check whether removes element is linkview or not
-
         //validateCircuit();
     })
+
+    $('#resistance').on("input change", function () {
+        if (currentElementHoldsSlide == 'resistor') {
+            elements[0].get('numerical').impedance = $('#resistance').val();
+
+        }
+        else if (currentElementHoldsSlide == 'bulb') {
+            elements[2].get('numerical').impedance = $('#resistance').val();
+
+        }
+    });
+   
+    $('#voltage').on("input change", function () {
+        elements[1].get('numerical').voltage = $('#voltage').val();
+
+    });
+
+    $('#current').on("input change", function () {
+        elements[2].get('numerical').current = $('#current').val();
+    });
+
+
+    $('.BaseElement').mouseenter(function () {
+        
+        $('.cancelIcon').css("visibility", "visible");
+        $('.cancelIconText').css("visibility", "visible");
+    });
+
+    $('.BaseElement').mouseleave(function () {
+        $('.cancelIcon').css("visibility", "hidden");
+        $('.cancelIconText').css("visibility", "hidden");
+    });
+
+
 
 });
 

@@ -15,7 +15,7 @@ joint.shapes.circuit = {};
 
 joint.shapes.circuit.BaseElement = joint.shapes.basic.Generic.extend({
 
-    markup: '<g class="rotatable element"><g class="scalable"><rect class="body"/><image/></g><circle class="cancelIcon"></circle><circle class="input"/><circle class="output"/><text class="text"/><text event="cancel:click" class="cancelIconText"/></g>',
+    markup: '<g class="rotatable element"><g class="scalable"><rect class="body"/><image/></g><circle class="cancelIcon"></circle><circle class="input"/><circle class="output"/><text class="text"/><text class="cancelIconText"/></g>',
     defaults: joint.util.deepSupplement({
         type: 'circuit.BaseElement',
         size: { width: 120, height: 70 },
@@ -33,14 +33,34 @@ joint.shapes.circuit.BaseElement = joint.shapes.basic.Generic.extend({
                 width: 80, height: 50,
                 ref: '.body',  'ref-y': 0
             },
-            '.cancelIcon': { ref: '.body', 'ref-dx': 15, 'ref-y': -15, fill: 'red', 'stroke-width': 0, r: 0, 'color': 'white' },
-            //'.cancelIconText': { ref: '.body', 'ref-dx': 15, 'ref-y': -22, text: 'X', fill: 'white', foreground: 'white', 'font-size': 20, 'stroke-width': 0 },
+            '.cancelIcon': { ref: '.body', 'ref-dx': 15, 'ref-y': -15, fill: 'red', 'stroke-width': 0, r: 7, 'color': 'white' },
+            '.cancelIconText': { ref: '.body', 'ref-dx': 15, 'ref-y': -22, text: 'X', fill: 'white', foreground: 'white', 'font-size': 20, 'stroke-width': 0 },
             '.element': { stroke: 'black', fill: 'transparent', 'stroke-width': 2 },
             //'.body': { width: 50, height: 20, fill: 'transparent' },
             '.input': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 ,ref: '.body', 'ref-x': 0, 'ref-y': 0.5, magnet: true, port: 'in' },
             '.output': { r: 7, stroke: 'black', fill: 'transparent', 'stroke-width': 2 , ref: '.body', 'ref-dx': 0, 'ref-y': 0.5, magnet: true, port: 'out' }
         }
     }, joint.shapes.basic.Generic.prototype.defaults)
+});
+
+joint.shapes.circuit.BaseElementView = joint.dia.ElementView.extend({
+
+
+    initialize: function () {
+        joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+        this.$box = $(_.template(this.template)());
+        console.log('init');
+        $('.cancelIcon .cancelIconText').on('mousedown click', function (evt) { console.log('cancel clicked..'); evt.stopPropagation(); });
+
+    },
+    render: function () {
+        joint.dia.ElementView.prototype.render.apply(this, arguments);
+        this.paper.$el.prepend(this.$box);
+        return this;
+    },
+    removeBox: function (evt) {
+        this.$box.remove();
+    }
 });
 
 joint.shapes.circuit.ImageBackground = joint.shapes.basic.Generic.extend({

@@ -4,11 +4,12 @@
     <title>My Lab</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <link rel="stylesheet" href="styles/joint.css" />
+    <link href="styles/jquery-ui.css" rel="stylesheet" />
+    <link href="styles/slider.css" rel="stylesheet" />
+    <script src="scripts/bootstrap-slider.js"></script>
     <link rel="stylesheet" href="styles/CanvasStyles.css" />
     <script src="scripts/joint.js"></script>
-    <!--<script src="scripts/joint.shapes.devs.js"></script>-->
     <script src="scripts/joint.shapes.circuit.js"></script>
-    <!--<script src="scripts/angular.min.js"></script>-->
     <link href="styles/bootstrap.min.css" rel="stylesheet" />
     <script src="scripts/bootstrap.min.js"></script>   
     <script src="scripts/jsapi.js"></script> 
@@ -21,7 +22,7 @@
 </head>
 <body >
     
-   
+    <h1 style="text-align:center; font-size:50px; font-family:'Segoe UI';font-weight:700;">my labs</h1>
     <div id="mainContainer">
         <div id="canvas">
             <div id="drawingPanel">
@@ -42,41 +43,77 @@
             </div>
         </div>
         <div id="graphPanel">
-            <input id="takeReading" type="button" value="Take Reading" align="middle" name="Take reading" />
-            <div id="graphControls">
-                <select id="componentSelect">
-                    <option value="Component">Component</option>
-                    <option value="Resistor">Resistor</option>
-                    <option value="Battery">Battery</option>
-                    <option value="Bulb">Bulb</option>
-                </select>
-                <select id="xaxisSelect">
-                    <option value="X-Axis">X-Axis</option>
-                    <option value="Impedance">Impedance</option>
-                    <option value="Current">Current</option>
-                    <option value="Voltage">Voltage</option>
-                </select>
-                <select id="yaxisSelect">
-                    <option value="Y-Axis">Y-Axis</option>
-                    <option value="Impedance">Impedance</option>
-                    <option value="Current">Current</option>
-                    <option value="Voltage">Voltage</option>
-                </select>
-            </div>
-            <div id="readingsPanelParticular">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Something (X-axis)</th>
-                            <th>Something (Y-axis)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table_body_readings"></tbody>
-                </table>
-            </div>
-            <div id="chartPanel">
 
+            <div class="panel panel-default" id="slidersPanel">
+                <div class="panel-body">
+                    <h3 id="currentElementSlider">
+                        Component
+                    </h3>
+                    <div class="slider" id="resistorSliderDiv">
+                        <h4>Resistance</h4>
+                        <input type=range min=0 max=100 value=50 id="resistance" step=1>
+
+                    </div>
+                    <div class="slider" id="voltageSliderDiv">
+                        <h4>
+                            Voltage
+                        </h4>
+                            <input type=range min=0 max=100 value=50 id="voltage" step=1>
+
+                    </div>
+                    <div class="slider" id="currentSliderDiv">
+                        Current
+                        <input type=range min=0 max=100 value=50 id="current" step=1>
+
+                    </div>
+                </div>
             </div>
+           
+            <div id="readingsPanelDiv">
+                <input id="takeReading" type="button" value="Take Reading" name="Take reading" />
+                <div id="graphControls">
+                    <select id="componentSelect">
+                        <option value="Component">Component</option>
+                        <option value="Resistor">Resistor</option>
+                        <option value="Battery">Battery</option>
+                        <option value="Bulb">Bulb</option>
+                    </select>
+                    <select id="xaxisSelect">
+                        <option value="X-Axis">X-Axis</option>
+                        <option value="Impedance">Impedance</option>
+                        <option value="Current">Current</option>
+                        <option value="Voltage">Voltage</option>
+                    </select>
+                    <select id="yaxisSelect">
+                        <option value="Y-Axis">Y-Axis</option>
+                        <option value="Impedance">Impedance</option>
+                        <option value="Current">Current</option>
+                        <option value="Voltage">Voltage</option>
+                    </select>
+                </div>
+
+
+                <div id="readingsPanelParticular">
+                    <table class="table" id="graphReadingsTable">
+                        <thead>
+                            <tr>
+                                <th id="xAxisH">X-axis</th>
+                                <th id="yAxisH">Y-axis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table_body_readings"></tbody>
+                    </table>
+                </div>
+            </div id="readingsPanelDiv">
+            
+            
+            <div id="chartPanelDiv">
+                <h3 style="margin:0; text-align:center;"> Graph</h3>
+                <div id="chartPanel">
+
+                </div>
+            </div>
+           
 
         </div>
     </div id="mainContainer">
