@@ -95,12 +95,12 @@ $(document).ready(function () {
         var image;
         var body;
         if (type == 'bulb') {
-            image = { 'xlink:href': '../images/' + imagepah};
+            image = { 'xlink:href': './images/' + imagepah};
             //image = { 'xlink:href': '../images/' + imagepah, ref: '.body', 'ref-y': -20, height:80 };
             body = { 'stroke-width': 0 };
         }
         else{
-            image = { 'xlink:href': '../images/' + imagepah };
+            image = { 'xlink:href': './images/' + imagepah };
             body = { 'stroke-width': 0 };
             }
         var element = new joint.shapes.circuit.BaseElement({
@@ -316,7 +316,7 @@ $(document).ready(function () {
             var bul = elements[2];
 
             bul.attr({
-                image: { 'xlink:href': '../images/bulbon.png' }
+                image: { 'xlink:href': './images/bulbon.png' }
            });
             button1.attr({
                 text: { text: 'Stop' }
@@ -423,7 +423,7 @@ $(document).ready(function () {
             });
 
             elements[2].attr({
-                image: { 'xlink:href': '../images/bulboff.png' }
+                image: { 'xlink:href': './images/bulboff.png' }
             });
             stopRandom();
         }
