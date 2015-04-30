@@ -70,10 +70,7 @@ joint.shapes.circuit.ImageBackground = joint.shapes.basic.Generic.extend({
         type: 'circuit.ImageBackground',
         size: { width: 120, height: 70 },
         attrs: {
-            image: {
-                width: 48, height: 48,
-                ref: '.body', 'y-alignment': 'middle', 'ref-y': 15
-            }
+            '.body': {fill:'white'}
         }
     }, joint.shapes.basic.Generic.prototype.defaults)
 });
@@ -157,7 +154,8 @@ joint.shapes.circuit.BreadBoardPort = joint.shapes.basic.Generic.extend({
         type: 'circuit.BreadBoardPort',
         size: { width: 7, height: 7 },
         attrs: {
-        circle: { r: 3, stroke: 'black', fill: 'transparent', magnet:'none','stroke-width': 2 },
+            circle: { r: 1, stroke: 'black', magnet: 'none', 'stroke-width': 0, fill: 'black' },
+            '.port': { r: 1, stroke: 'black', magnet: 'none', 'stroke-width': 0, fill: 'black' }
         }
     }, joint.shapes.basic.Generic.prototype.defaults),
 

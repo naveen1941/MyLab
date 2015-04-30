@@ -42,6 +42,7 @@ table{
     width: 500px;
     height:810px;
     border:3px solid lightgray;
+    opacity:0.9;
 }
 
 #drawingPanel{
@@ -73,7 +74,7 @@ select{
 }
 #slidersPanel{
     /*border:1px solid red;*/
-    width:300px;
+    /*width:300px;*/
     height:170px;
     margin:auto;
     border:3px solid lightgray;
@@ -88,7 +89,7 @@ th,tr{
 }
 #readingsPanelDiv{
     padding-top: 20px;
-    width:400px;
+    /*width:400px;*/
     height:400px;
     margin:auto;
     background-color:white;
@@ -189,4 +190,36 @@ input[type="range"]::-ms-thumb {
 	height: 20px;
 	border-radius: 10px;
 	cursor: pointer;
+}
+
+/*Tool bar*/
+#toolbar-container {
+  background-repeat: repeat;
+  border: 2px solid rgba(0,0,0,0.2);
+  padding: 5px;
+}
+#toolbar-container {
+  position: fixed;
+  left: 71px;
+  top: 126px;
+  width:80px;
+  background-color:rgb(59, 61, 66);
+}
+
+
+#toolbar-container .btn-drive-load img, #toolbar-container .btn-drive-save img {
+    width: 20px;
+    height: 20px;
+}
+
+.toolBarIconStyle{
+    background-color:rgb(52, 54, 58);
+    color:white;
+    height: 64px;
+    width: 67px;
+    border:2px solid black;
+     margin-bottom:10px;
+}
+input[type=button]{
+    margin-bottom:10px;
 }

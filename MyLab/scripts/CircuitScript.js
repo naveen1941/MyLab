@@ -93,14 +93,15 @@ $(document).ready(function () {
 
     var addElementMIcon = function (x, y, imagepah, type) {
         var image;
+        var body;
         if (type == 'bulb') {
-            //image = { 'xlink:href': '../images/' + imagepah, 'y-alignment': 'middle'};
-            image = { 'xlink:href': '../images/' + imagepah };
-
+            image = { 'xlink:href': '../images/' + imagepah};
+            //image = { 'xlink:href': '../images/' + imagepah, ref: '.body', 'ref-y': -20, height:80 };
+            body = { 'stroke-width': 0 };
         }
         else{
             image = { 'xlink:href': '../images/' + imagepah };
-
+            body = { 'stroke-width': 0 };
             }
         var element = new joint.shapes.circuit.BaseElement({
             position: { x: x, y: y },
@@ -109,7 +110,7 @@ $(document).ready(function () {
             numerical: { 'current': undefined, 'voltage': undefined, 'impedance': undefined, 'r_current': undefined, 'r_voltage': undefined, 'r_impedance': undefined },
             attrs: {
                 image: image,
-                '.body': { 'stroke-width': 0 },
+                '.body': body,
                 '.cancelIcon':{r:15}
             }
         });
@@ -186,10 +187,11 @@ $(document).ready(function () {
 
 
     var breadboardBG = new joint.shapes.circuit.ImageBackground({
-        position: { x: 1, y: 320 },
+        position: { x: 1, y: 100 },
         size: { width: 1100, height: 450 },
         attrs: {
-            image: { 'xlink:href': '../images/plastic_texture.jpg', width: 1100, height: 450 },
+            //image: { 'xlink:href': '../images/plastic_texture.jpg', width: 1100, height: 450 },
+            '.body': { width: 1100, height: 450, fill: 'white' }
         },
     });
 
@@ -216,9 +218,9 @@ $(document).ready(function () {
         graphDrawing.addCell(element);
     }
 
-    addElementMIcon(100+100, 40, 'image1.png', 'resistor');
-    addElementMIcon(350+100, 40, 'battery.png', 'battery');
-    addElementMIcon(600+100, 40, 'bulboff.png', 'bulb');
+    addElementMIcon(100+100, 20, 'image1.png', 'resistor');
+    addElementMIcon(350+100, 20, 'battery.png', 'battery');
+    addElementMIcon(600+100, 20, 'bulboff.png', 'bulb');
 
     var button1 = new joint.shapes.basic.Rect({
         position: { x: (canvasWidth/2)-50, y: canvasHeight - 40 },
@@ -230,17 +232,11 @@ $(document).ready(function () {
         }
     });
 
-    //var button2 = new joint.shapes.basic.Rect({
-    //    position: { x: (canvasWidth / 2) - 50, y: canvasHeight - 40 },
-    //    size: { width: 100, height: 30 },
-    //    attrs: { rect: { fill: 'blue' }, text: { text: 'Stop', fill: 'white' }, magnet: false }
-    //});
-
+  
     var line = g.line(g.point(10, 20), g.point(50, 600));
 
-   // button2.set('size', { width: 0, height: 0 });
+
     graphDrawing.addCell(button1);
-   // graphDrawing.addCell(button2);
 
 
 
@@ -362,7 +358,7 @@ $(document).ready(function () {
     graphDrawing.on('change:position', function (cell) {
 
         if (cell instanceof joint.shapes.circuit.ImageBackground) {
-            cell.set('position', { x: 1, y: 320 });
+            cell.set('position', { x: 1, y: 100 });
         }
 
         //// has an obstacle been moved? Then reroute the link.
@@ -528,7 +524,7 @@ $(document).ready(function () {
     $("#componentSelect").change(function () {
         if (currentComponent != $("#componentSelect option:selected").text()) {
             currentComponent = $("#componentSelect option:selected").text();
-            console.log(currentComponent);
+            //console.log(currentComponent);
         }
         showReadingsTable();
     });
@@ -762,16 +758,16 @@ $(document).ready(function () {
     });
 
 
-    $('.BaseElement').mouseenter(function () {
+    //$('.BaseElement').mouseenter(function () {
         
-        $('.cancelIcon').css("visibility", "visible");
-        $('.cancelIconText').css("visibility", "visible");
-    });
+    //    $('.cancelIcon').css("visibility", "visible");
+    //    $('.cancelIconText').css("visibility", "visible");
+    //});
 
-    $('.BaseElement').mouseleave(function () {
-        $('.cancelIcon').css("visibility", "hidden");
-        $('.cancelIconText').css("visibility", "hidden");
-    });
+    //$('.BaseElement').mouseleave(function () {
+    //    $('.cancelIcon').css("visibility", "hidden");
+    //    $('.cancelIconText').css("visibility", "hidden");
+    //});
 
 
 
