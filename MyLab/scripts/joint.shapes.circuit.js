@@ -49,8 +49,8 @@ joint.shapes.circuit.BaseElementView = joint.dia.ElementView.extend({
     initialize: function () {
         joint.dia.ElementView.prototype.initialize.apply(this, arguments);
         this.$box = $(_.template(this.template)());
-        console.log('init');
-        $('.cancelIcon .cancelIconText').on('mousedown click', function (evt) { console.log('cancel clicked..'); evt.stopPropagation(); });
+        //console.log('init');
+        $('.cancelIcon .cancelIconText').on('mousedown click', function (evt) {  evt.stopPropagation(); });
 
     },
     render: function () {
